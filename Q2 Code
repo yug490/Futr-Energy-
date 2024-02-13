@@ -1,0 +1,35 @@
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+import requests
+import os
+
+def download_file(file_id, destination_path):
+    file_obj = drive.CreateFile({'id': file_id})
+    file_obj.GetContentFile(destination_path)
+
+def create_folder_structure(parent_folder, folder_name):
+    new_folder = os.path.join(parent_folder, folder_name)
+    if not os.path.exists(new_folder):
+        os.makedirs(new_folder)
+    return new_folder
+
+folder_link = 'https://drive.google.com/drive/folders/1_C7I2658qnRP54gw1igYCXoyWGb8p_9h?usp=sharing'
+
+gauth = GoogleAuth()
+gauth.LocalWebserverAuth()  
+
+drive = GoogleDrive(gauth)
+
+folder_id = folder_link.split('/')[-1]
+
+folder = drive.CreateFile({'id': folder_id})
+folder_title = folder['title']
+
+files = folder['list']
+for file in files:
+    file_title = file['title']
+    relative_path = os.path.join(folder_title, file_title)
+    local_folder = create_folder_structure(os.getcwd(), relative_path)
+    download_file(file_id, os.path.join(local_folder, file_title))
+
+print(f'Download completed. Files saved in: {os.getcwd()}')
