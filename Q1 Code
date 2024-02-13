@@ -1,0 +1,77 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import random
+
+def draw_lines_and_polygons(num_lines, num_polygons, figsize=(10, 7)):
+  """
+  This function draws a random number of lines and polygons with labels and marks two random points as red and green.
+
+  Args:
+      num_lines: The number of lines to draw.
+      num_polygons: The number of polygons to draw.
+      figsize: The size of the figure in inches.
+
+  Returns:
+      None
+  """
+
+  
+  fig, ax = plt.subplots(figsize=figsize)
+
+  points = []
+  for _ in range(100):
+    points.append([random.uniform(0, figsize[0]), random.uniform(0, figsize[1])])
+
+
+  for _ in range(num_lines):
+    
+    i, j = random.sample(range(len(points)), 2)
+    start_point, end_point = points[i], points[j]
+
+
+    ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], color=matplotlib.colors.colorNames.keys())
+
+  
+  for _ in range(num_polygons):
+    
+    num_vertices = random.randint(3, 7)
+    polygon_points = random.sample(points, num_vertices)
+
+    
+    ax.fill([p[0] for p in polygon_points], [p[1] for p in polygon_points], color=matplotlib.colors.colorNames.keys(), alpha=0.3)
+
+  
+  label_counter = 1
+  for line in ax.lines:
+    x, y = line.get_xydata()[0]
+    ax.text(x, y, f"L-{label_counter}", ha="center", va="center", fontsize=8)
+    label_counter += 1
+
+  for patch in ax.patches:
+    x, y = patch.get_xy()[0]
+    ax.text(x, y, f"P-{label_counter}", ha="center", va="center", fontsize=8)
+    label_counter += 1
+
+
+  red_point_index = random.randint(0, len(points) - 1)
+  green_point_index = random.randint(0, len(points) - 1)
+  red_point, green_point = points[red_point_index], points[green_point_index]
+
+  ax.scatter(red_point[0], red_point[1], color="red", marker="o", s=50)
+  ax.scatter(green_point[0], green_point[1], color="green", marker="o", s=50)
+
+  
+  ax.set_xlim(-0.1 * figsize[0], 1.1 * figsize[0])
+  ax.set_ylim(-0.1 * figsize[1], 1.1 * figsize[1])
+
+
+  ax.set_xlabel("X")
+  ax.set_ylabel("Y")
+
+  
+  ax.set_title("Lines and Polygons with Labels and Marked Points")
+
+
+  plt.show()
+
+draw_lines_and_polygons(num_lines=5, num_polygons=3)
