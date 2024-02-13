@@ -1,0 +1,30 @@
+import pandas as pd
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+
+
+excel_file = '/content/toyota .xlsx'
+df = pd.read_excel(excel_file)
+
+
+pdf_file = 'output.pdf'
+c = canvas.Canvas(pdf_file, pagesize=letter)
+
+
+table_data = [df.columns[:, ].values.astype(str)] + df.values.tolist()
+table = Table(table_data)
+style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), 'grey'),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), 'white'),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), 'lightgrey'),
+                    ])
+table.setStyle(style)
+table.wrapOn(c, 0, 0)
+table.drawOn(c, 100, 500) 
+
+c.save()
+
+print(f'PDF created successfully: {pdf_file}')
